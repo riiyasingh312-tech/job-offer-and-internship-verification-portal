@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OfferCheck – Internship & Job Offer Verification</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<!-- =============================== LOGIN / REGISTER =============================== -->
+<div id="auth-view" class="auth hidden">
+  <section class="auth-hero">
+    <div class="brand light"><span class="logo">🛡️</span> OfferCheck</div>
+    <h1>Check before you say yes.</h1>
+    <p>Fake internships and job offers cost students money and personal data every day. Verify yours in seconds.</p>
+    <ul class="feature-list">
+      <li><span>🏢</span><div><b>Company check</b><small>Impersonation, look-alike domains, registration number</small></div></li>
+      <li><span>📄</span><div><b>Offer-letter &amp; message scan</b><small>AI + strict rules catch fees, pressure and fake letters</small></div></li>
+      <li><span>🌐</span><div><b>Live website check</b><small>Domain age, SSL certificate, brand imitation</small></div></li>
+      <li><span>📝</span><div><b>Resume score &amp; tips</b><small>ATS readiness with clear steps to improve</small></div></li>
+    </ul>
+  </section>
+
+  <section class="auth-card">
+    <div class="auth-tabs">
+      <button class="active" data-auth="login" type="button">Log in</button>
+      <button data-auth="register" type="button">Create account</button>
+    </div>
+
+    <form id="form-login" class="auth-form" novalidate>
+      <h2>Welcome back</h2>
+      <label>Email<input type="text" name="email" autocomplete="email" placeholder="you@example.com"></label>
+      <label>Password<input type="password" name="password" autocomplete="current-password" placeholder="Your password"></label>
+      <p class="form-error hidden" role="alert"></p>
+      <button class="btn block" type="submit">Log in</button>
+    </form>
+
+    <form id="form-register" class="auth-form hidden" novalidate>
+      <h2>Create your account</h2>
+      <label>Full name<input type="text" name="name" autocomplete="name" placeholder="Riya Singh"></label>
+      <label>Email<input type="text" name="email" autocomplete="email" placeholder="you@example.com"></label>
+      <label>Password<input type="password" name="password" autocomplete="new-password" placeholder="At least 8 characters, with a number"></label>
+      <div class="strength" id="strength"><i></i><i></i><i></i><i></i><span>Password strength</span></div>
+      <p class="form-error hidden" role="alert"></p>
+      <button class="btn block" type="submit">Create account</button>
+      <p class="fine">Your checks are saved privately to your account. You can delete them any time.</p>
+    </form>
+  </section>
+</div>
+
+<!-- =============================== MAIN APP =============================== -->
+<div id="app-view" class="hidden">
+  <header class="top">
+    <div class="wrap top-inner">
+      <div class="brand"><span class="logo">🛡️</span> OfferCheck</div>
+      <nav class="top-nav">
+        <a href="#verify">Verify</a>
+        <a href="#history">History</a>
+        <a href="#accuracy">Accuracy</a>
+      </nav>
+      <div class="user">
+        <span class="avatar" id="avatar">R</span>
+        <span class="user-name" id="user-name"></span>
+        <button class="btn small ghost-light" id="logout" type="button">Log out</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="wrap">
+      <p class="kicker">AI &amp; MACHINE LEARNING · LIVE CHECKS</p>
+      <h1 id="hello">What would you like to verify?</h1>
+      <p class="sub">Check a company, offer letter, message, website — or improve your resume.</p>
+      <div class="stats">
+        <div class="stat"><b id="stat-total">0</b><span>checks done</span></div>
+        <div class="stat"><b id="stat-risky">0</b><span>risky offers caught</span></div>
+        <div class="stat"><b id="stat-acc">–</b><span>model test accuracy</span></div>
+      </div>
+    </div>
+  </section>
+
+  <main class="wrap" id="verify">
+    <div class="tabs" role="tablist">
+      <button class="tab active" data-tab="company"><span>🏢</span> Company</button>
+      <button class="tab" data-tab="offer"><span>📄</span> Offer Letter</button>
+      <button class="tab" data-tab="message"><span>📧</span> Message</button>
+      <button class="tab" data-tab="url"><span>🌐</span> Website</button>
+      <button class="tab" data-tab="resume"><span>📝</span> Resume</button>
+    </div>
+
+    <div class="grid">
+      <!-- ---------------- inputs ---------------- -->
+      <section class="card">
+
+        <form class="panel active" id="panel-company" data-endpoint="company">
+          <h2>Company verification</h2>
+          <p class="hint">Enter what the recruiter gave you. We check consistency, impersonation and domain age.</p>
+          <label>Company name *<input type="text" name="name" placeholder="e.g. Zoho Corporation" required></label>
+          <label>Company website<input type="text" name="website" placeholder="e.g. https://www.zoho.com"></label>
+          <label>Recruiter / company email<input type="text" name="email" placeholder="e.g. careers@zoho.com"></label>
+          <label>CIN (company registration number) <em>optional</em><input type="text" name="cin" placeholder="e.g. U72200TN1996PTC045205"></label>
+          <button type="submit" class="btn">Verify company</button>
+          <div class="examples">Try an example:
+            <a href="#" data-fill='{"name":"Amazon Hiring","website":"http://amazon-jobs.xyz","email":"hr.amazon@gmail.com","cin":""}'>fake</a> ·
+            <a href="#" data-fill='{"name":"Zoho Corporation","website":"https://www.zoho.com","email":"careers@zoho.com","cin":"U72200TN1996PTC045205"}'>genuine</a>
+          </div>
+        </form>
+
+        <form class="panel" id="panel-offer" data-endpoint="offer-letter" data-upload>
+          <h2>Offer letter analysis</h2>
+          <p class="hint">Upload the PDF or paste the text. We check wording, structure, dates, pay and links.</p>
+          <div class="switch">
+            <button type="button" class="seg active" data-mode="pdf">Upload PDF</button>
+            <button type="button" class="seg" data-mode="text">Paste text</button>
+          </div>
+          <label class="drop"><input type="file" name="file" accept="application/pdf">
+            <span class="drop-icon">📎</span><strong class="file-name">Choose a PDF or drag it here</strong><small>Text-based PDFs only · max 5 MB</small></label>
+          <label class="hidden text-wrap">Letter text<textarea name="text" rows="9" placeholder="Paste the full offer letter here…"></textarea></label>
+          <button type="submit" class="btn">Analyze offer letter</button>
+        </form>
+
+        <form class="panel" id="panel-message" data-endpoint="message">
+          <h2>Email / message detection</h2>
+          <p class="hint">Paste an email, WhatsApp, SMS or LinkedIn message. Links inside are checked too.</p>
+          <label>Message text *<textarea name="text" rows="8" placeholder="Paste the message here…" required></textarea></label>
+          <button type="submit" class="btn">Check message</button>
+          <div class="examples">Try an example:
+            <a href="#" data-fill='{"text":"Congratulations! You are selected for Wipro internship. Pay 1500 registration fee on Paytm today, limited seats!!!"}'>scam</a> ·
+            <a href="#" data-fill='{"text":"Hi Riya, your interview for the Python Developer Intern role is scheduled on Tuesday at 11 AM. Please join via the link in your registered email."}'>genuine</a>
+          </div>
+        </form>
+
+        <form class="panel" id="panel-url" data-endpoint="url">
+          <h2>Website / URL analysis</h2>
+          <p class="hint">Paste the link you were sent. We check its structure, brand look-alikes, domain age and SSL certificate.</p>
+          <label>Website URL *<input type="text" name="url" placeholder="e.g. https://careers.example.com" required></label>
+          <button type="submit" class="btn">Analyze URL</button>
+          <div class="examples">Try an example:
+            <a href="#" data-fill='{"url":"http://amaz0n-jobs.xyz/verify-login"}'>suspicious</a> ·
+            <a href="#" data-fill='{"url":"https://www.zoho.com"}'>genuine</a>
+          </div>
+        </form>
+
+        <form class="panel" id="panel-resume" data-endpoint="resume" data-upload>
+          <h2>Resume checker</h2>
+          <p class="hint">Get an ATS-readiness score, red flags and a prioritised list of improvements.</p>
+          <div class="switch">
+            <button type="button" class="seg active" data-mode="pdf">Upload PDF</button>
+            <button type="button" class="seg" data-mode="text">Paste text</button>
+          </div>
+          <label class="drop"><input type="file" name="file" accept="application/pdf">
+            <span class="drop-icon">📄</span><strong class="file-name">Choose your resume PDF or drag it here</strong><small>Text-based PDFs only · max 5 MB</small></label>
+          <label class="hidden text-wrap">Resume text<textarea name="text" rows="9" placeholder="Paste your resume text here…"></textarea></label>
+          <button type="submit" class="btn">Analyze resume</button>
+        </form>
+      </section>
+
+      <!-- ---------------- result ---------------- -->
+      <section class="card result" id="result" aria-live="polite">
+        <div class="empty" id="result-empty">
+          <div class="empty-icon">🔍</div>
+          <h3>Your result will appear here</h3>
+          <p>You'll get a risk score, how confident we are, the exact reasons, and what to do next.</p>
+        </div>
+        <div class="loading hidden" id="result-loading"><div class="spinner"></div><p id="loading-text">Analyzing…</p></div>
+        <div class="out hidden" id="result-out"></div>
+        <div class="err hidden" id="result-err"></div>
+      </section>
+    </div>
+
+    <!-- ---------------- history ---------------- -->
+    <section class="card history" id="history">
+      <div class="history-head">
+        <div>
+          <h2>Your history</h2>
+          <p class="hint" id="history-hint">Only you can see these.</p>
+        </div>
+        <div class="history-tools">
+          <select id="history-filter" aria-label="Filter by type">
+            <option value="">All types</option><option value="company">Company</option><option value="offer_letter">Offer letter</option>
+            <option value="message">Message</option><option value="url">Website</option><option value="resume">Resume</option>
+          </select>
+          <input type="text" id="history-search" placeholder="Search…" aria-label="Search history">
+          <button class="btn small danger" id="clear-history" type="button">Clear all</button>
+        </div>
+      </div>
+      <div class="usage"><div class="usage-bar"><i id="usage-fill"></i></div><span id="usage-text">0 / 50 used</span></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>When</th><th>Type</th><th>Input</th><th>Score</th><th>Result</th><th>Conf.</th><th></th></tr></thead>
+          <tbody id="history-body"><tr><td colspan="7" class="muted">No checks yet.</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ---------------- accuracy ---------------- -->
+    <section class="card accuracy" id="accuracy">
+      <h2>How accurate is it?</h2>
+      <p class="hint">The scam-message model is tested on messages it was <b>not</b> trained on.</p>
+      <div class="metric-grid" id="metrics"></div>
+      <p class="fine" id="metrics-note"></p>
+      <div class="explain">
+        <div><b>Confidence %</b><p>Shown on every result. It says how sure the system is about <em>that</em> verdict: higher when the score is clearly far from the borderline, several signals agree and live internet checks worked.</p></div>
+        <div><b>Model accuracy</b><p>How often the ML model classified unseen test messages correctly. The dataset is small, so real-world accuracy will be lower until it is trained on more data.</p></div>
+      </div>
+    </section>
+  </main>
+
+  <footer><div class="wrap">THANK YOU</div></footer>
+</div>
+
+<div id="toast" class="toast hidden" role="status"></div>
+<script src="/static/app.js"></script>
+</body>
+</html>

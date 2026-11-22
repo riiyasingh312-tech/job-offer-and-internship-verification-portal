@@ -1,0 +1,12 @@
+{
+  "samples": 153,
+  "train_samples": 114,
+  "test_samples": 39,
+  "accuracy": 94.9,
+  "precision": 90.9,
+  "recall": 100.0,
+  "f1": 95.2,
+  "cv_accuracy": 98.0,
+  "trained_at": "2026-11-22T11:34:37+00:00",
+  "note": "Evaluated on a small held-out test set; accuracy on real-world messages will be lower. Add a larger dataset and retrain for a more reliable number."
+}
