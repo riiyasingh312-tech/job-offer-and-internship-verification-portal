@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OfferCheck – Internship & Job Offer Verification</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap top-inner">
+    <div class="brand"><span class="logo">🛡️</span> OfferCheck</div>
+    <nav class="top-nav">
+      <a href="#verify">Verify</a>
+      <a href="#history" id="nav-history">History</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <p class="kicker">AI &amp; MACHINE LEARNING POWERED</p>
+    <h1>Is that internship or job offer real?</h1>
+    <p class="sub">Check a company, offer letter, message or website in seconds — before you share money or documents.</p>
+    <div class="legend">
+      <span class="pill green">🟢 Likely Genuine</span>
+      <span class="pill amber">🟡 Suspicious</span>
+      <span class="pill red">🔴 High Risk / Fake</span>
+    </div>
+  </div>
+</section>
+
+<main class="wrap" id="verify">
+
+  <div class="tabs" role="tablist">
+    <button class="tab active" data-tab="company"><span>🏢</span> Company</button>
+    <button class="tab" data-tab="offer"><span>📄</span> Offer Letter</button>
+    <button class="tab" data-tab="message"><span>📧</span> Email / Message</button>
+    <button class="tab" data-tab="url"><span>🌐</span> Website URL</button>
+  </div>
+
+  <div class="grid">
+    <!-- ================= INPUT PANELS ================= -->
+    <section class="card">
+
+      <!-- Company -->
+      <form class="panel active" id="panel-company" data-endpoint="company">
+        <h2>Company Verification</h2>
+        <p class="hint">Enter what the recruiter gave you. We check if the details are consistent.</p>
+        <label>Company name *
+          <input type="text" name="name" placeholder="e.g. Zoho Corporation" required>
+        </label>
+        <label>Company website
+          <input type="text" name="website" placeholder="e.g. https://www.zoho.com">
+        </label>
+        <label>Recruiter / company email
+          <input type="text" name="email" placeholder="e.g. careers@zoho.com">
+        </label>
+        <button type="submit" class="btn">Verify company</button>
+        <div class="examples">Try an example:
+          <a href="#" data-fill='{"name":"Amazon Hiring","website":"http://amazon-jobs.xyz","email":"hr.amazon@gmail.com"}'>fake</a> ·
+          <a href="#" data-fill='{"name":"Zoho Corporation","website":"https://www.zoho.com","email":"careers@zoho.com"}'>genuine</a>
+        </div>
+      </form>
+
+      <!-- Offer letter -->
+      <form class="panel" id="panel-offer" data-endpoint="offer-letter">
+        <h2>Offer Letter Analysis</h2>
+        <p class="hint">Upload the PDF, or paste the letter text.</p>
+        <div class="switch">
+          <button type="button" class="seg active" data-mode="pdf">Upload PDF</button>
+          <button type="button" class="seg" data-mode="text">Paste text</button>
+        </div>
+        <label class="drop" id="drop">
+          <input type="file" name="file" accept="application/pdf" id="file-input">
+          <span class="drop-icon">📎</span>
+          <strong id="file-name">Choose a PDF or drag it here</strong>
+          <small>Text-based PDFs only · max 5 MB</small>
+        </label>
+        <label class="hidden" id="offer-text-wrap">Letter text
+          <textarea name="text" rows="9" placeholder="Paste the full offer letter here…"></textarea>
+        </label>
+        <button type="submit" class="btn">Analyze offer letter</button>
+      </form>
+
+      <!-- Message -->
+      <form class="panel" id="panel-message" data-endpoint="message">
+        <h2>Email / Message Detection</h2>
+        <p class="hint">Paste an email, WhatsApp, SMS or LinkedIn message.</p>
+        <label>Message text *
+          <textarea name="text" rows="8" placeholder="Paste the message here…" required></textarea>
+        </label>
+        <button type="submit" class="btn">Check message</button>
+        <div class="examples">Try an example:
+          <a href="#" data-fill='{"text":"Congratulations! You are selected for Wipro internship. Pay 1500 registration fee on Paytm today, limited seats!!!"}'>scam</a> ·
+          <a href="#" data-fill='{"text":"Hi Riya, your interview for the Python Developer Intern role is scheduled on Tuesday at 11 AM. Please join via the link in your registered email."}'>genuine</a>
+        </div>
+      </form>
+
+      <!-- URL -->
+      <form class="panel" id="panel-url" data-endpoint="url">
+        <h2>Website / URL Analysis</h2>
+        <p class="hint">Paste the link the recruiter sent you. We don't open it — we only inspect its structure.</p>
+        <label>Website URL *
+          <input type="text" name="url" placeholder="e.g. https://careers.example.com" required>
+        </label>
+        <button type="submit" class="btn">Analyze URL</button>
+        <div class="examples">Try an example:
+          <a href="#" data-fill='{"url":"http://job-verify-login.xyz/pay"}'>suspicious</a> ·
+          <a href="#" data-fill='{"url":"https://www.zoho.com"}'>genuine</a>
+        </div>
+      </form>
+    </section>
+
+    <!-- ================= RESULT ================= -->
+    <section class="card result" id="result" aria-live="polite">
+      <div class="empty" id="result-empty">
+        <div class="empty-icon">🔍</div>
+        <h3>Your result will appear here</h3>
+        <p>Fill in a form and press verify. You'll get a risk score from 0 to 100 and the exact reasons behind it.</p>
+      </div>
+
+      <div class="loading hidden" id="result-loading">
+        <div class="spinner"></div>
+        <p>Analyzing…</p>
+      </div>
+
+      <div class="out hidden" id="result-out">
+        <div class="gauge-row">
+          <div class="gauge" id="gauge"><div class="gauge-inner"><b id="score">0</b><small>/ 100</small></div></div>
+          <div>
+            <span class="badge" id="level-badge">—</span>
+            <p class="verdict" id="verdict"></p>
+          </div>
+        </div>
+        <h4>Why we think so</h4>
+        <ul class="flags" id="flags"></ul>
+        <p class="note">This is an automated risk estimate, not proof. When in doubt, contact the company through its official website and never pay to get a job.</p>
+      </div>
+
+      <div class="err hidden" id="result-err"></div>
+    </section>
+  </div>
+
+  <!-- ================= HISTORY ================= -->
+  <section class="card history" id="history">
+    <div class="history-head">
+      <h2>Verification history</h2>
+      <button class="btn small ghost" id="refresh-history">↻ Refresh</button>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>When</th><th>Type</th><th>Input</th><th>Score</th><th>Result</th></tr></thead>
+        <tbody id="history-body"><tr><td colspan="5" class="muted">No checks yet.</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">PBL Phase 1 · Web Warriors, Group 2 · Graphic Era Hill University, Haldwani Campus</div>
+</footer>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
